@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # third-party apps
+    'rest_framework',
     # local apps
     'accounts.apps.AccountsConfig',
     'images.apps.ImagesConfig',
@@ -127,3 +129,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # user model
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+# media settings
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
