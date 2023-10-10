@@ -1,10 +1,8 @@
 from rest_framework import generics
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from .serializers import ImageCreateSerializer, ImageListSerializer
 from .models import Image
 
-@method_decorator(login_required(login_url="/api-auth/login"), name="dispatch")
+
 class ImageListCreateAPIVIew(generics.ListCreateAPIView):
     def get_serializer_class(self):
         if self.request.method == "POST":
