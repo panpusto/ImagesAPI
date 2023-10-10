@@ -9,8 +9,9 @@ class ImageListCreateAPIVIew(generics.ListCreateAPIView):
             return ImageCreateSerializer
         return ImageListSerializer
 
+    def get_queryset(self):
+            return Image.objects.filter(user=self.request.user)
+
     def perform_create(self, serializer):
         return serializer.save(user=self.request.user)
-    
-    def get_queryset(self):
-        return Image.objects.filter(user=self.request.user)
+        

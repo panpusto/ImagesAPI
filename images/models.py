@@ -23,11 +23,8 @@ class Image(models.Model):
     def get_links(self, request):
         user_tier = self.user.account_tier
         base_file = os.path.dirname(self.image.name)
-        print(base_file)
         thumbnails = default_storage.listdir(base_file)[1]
-        print(thumbnails)
         base_url = request.build_absolute_uri("/").rstrip("/")
-        print(base_url)
 
         thumbs_for_user = []
         for thumbnail in thumbnails:
@@ -40,6 +37,7 @@ class Image(models.Model):
         
         if user_tier.is_original_file:
             thumbs_for_user.append(base_url + self.image.url)
+            
         return thumbs_for_user
 
 
@@ -47,7 +45,7 @@ class ThumbnailSize(models.Model):
     height = models.IntegerField()
 
     def __str__(self):
-        return f"{self.height}px"
+        return f"{self.width}x{self.height}"
 
 
 class ExpiringLink(models.Model):
@@ -58,4 +56,3 @@ class ExpiringLink(models.Model):
 
     def __str__(self):
         return f"{self.id}"
-    
