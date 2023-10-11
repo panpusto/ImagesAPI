@@ -46,7 +46,7 @@ class ThumbnailSize(models.Model):
     height = models.IntegerField()
 
     def __str__(self):
-        return f"{self.width}x{self.height}"
+        return f"{self.height}px"
 
 
 class ExpiringLink(models.Model):

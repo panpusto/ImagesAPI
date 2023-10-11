@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Image, ThumbnailSize, ExpiringLink
 
+
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
     list_display = (
@@ -12,8 +13,18 @@ class ImageAdmin(admin.ModelAdmin):
 
 
 @admin.register(ThumbnailSize)
-class ThumbnailSize(admin.ModelAdmin):
+class ThumbnailSizeAdmin(admin.ModelAdmin):
     ordering = ("height",)
 
 
-admin.site.register(ExpiringLink)
+@admin.register(ExpiringLink)
+class ExpiringLinkAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "image"
+    )
+    fieldsets = (
+        (None, 
+            {"fields": ("image", "expiration_time"),
+        }),
+    )
