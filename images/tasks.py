@@ -8,7 +8,7 @@ from django.core.files.storage import default_storage
 from .models import Image
 
 
-@shared_task()
+@shared_task
 def generate_thumbnails(pk):
     """
     Generates thumbnails for uploaded images
@@ -42,3 +42,13 @@ def generate_thumbnails(pk):
             thumbnail_io.getvalue(),
             content_type="image/jpeg" if extension.lower() == "jpg" else "image/png")
         instance.image.save(thumbnail_name, thumb_file, save=False)
+
+
+@shared_task
+def cleanup_image_folder(path):
+    storage = default_storage
+    dir_name = os.path.dirname(path)
+
+    for file in storage.listdir(os.path.dirname(path))[1]:
+        file_path = os.path.join(dir_name, file)
+        storage.delete(file_path)

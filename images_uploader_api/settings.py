@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # third-party apps
     'rest_framework',
+    'django_cleanup.apps.CleanupConfig',
     # local apps
     'accounts.apps.AccountsConfig',
     'images.apps.ImagesConfig',
