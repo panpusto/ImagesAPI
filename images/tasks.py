@@ -4,6 +4,7 @@ from celery import shared_task
 from PIL import Image as pilImg
 from PIL.Image import Resampling
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.files.storage import default_storage
 from .models import Image
 
 

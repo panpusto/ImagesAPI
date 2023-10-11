@@ -1,5 +1,6 @@
 import os
 import uuid
+import time
 from pathlib import Path
 from django.db import models
 from django.conf import settings
@@ -56,3 +57,7 @@ class ExpiringLink(models.Model):
 
     def __str__(self):
         return f"{self.id}"
+
+    def is_expired(self):
+        current_time = time.time()
+        return current_time > self.expiration_time
