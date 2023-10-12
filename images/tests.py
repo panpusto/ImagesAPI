@@ -57,6 +57,9 @@ class TestThumbnailSizeModel:
         assert ThumbnailSize.objects.count() == 3
 
 
+# temporary directory for tests
+TEST_DIR = "test_data"
+
 @pytest.fixture
 def enterprise_user():
     enterprise_account = AccountTier.objects.get(name="Enterprise")
@@ -95,6 +98,7 @@ def image_file():
     return SimpleUploadedFile("test.jpeg", file.read())
 
 @pytest.fixture
+@override_settings(MEDIA_ROOT=(TEST_DIR + "/media"))
 def image(client, enterprise_user, image_file):
     return Image.objects.create(image=image_file, user=enterprise_user)
 
@@ -105,9 +109,6 @@ def expiring_link(client, image):
     response = client.post(url, data, format="json")
     return response.data.get("link")
 
-
-# temporary directory for tests
-TEST_DIR = "test_data"
 
 @pytest.mark.django_db
 class TestImageAPI:
