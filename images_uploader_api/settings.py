@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # third-party apps
     'rest_framework',
     'django_cleanup.apps.CleanupConfig',
+    'drf_spectacular',
     # local apps
     'accounts.apps.AccountsConfig',
     'images.apps.ImagesConfig',
@@ -139,9 +140,17 @@ MEDIA_ROOT = BASE_DIR / 'media'
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    ]
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # celery config
 CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_BROKER_BACKEND = 'redis://redis:6379/0'
+
+# spectacular config
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Images API',
+    'DESCRIPTION': 'Images uploader: generates thumbnails and expiring links',
+    'VERSION': '1.0.0',
+}

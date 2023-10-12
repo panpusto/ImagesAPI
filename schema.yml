@@ -1,0 +1,153 @@
+openapi: 3.0.3
+info:
+  title: Images API
+  version: 1.0.0
+  description: 'Images uploader: generates thumbnails and expiring links'
+paths:
+  /api/v1/images/:
+    get:
+      operationId: root_list
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ImageList'
+          description: ''
+    post:
+      operationId: root_create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ImageCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImageCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageCreate'
+          description: ''
+  /api/v1/images/expiring-link/:
+    get:
+      operationId: expiring_link_list
+      tags:
+      - expiring-link
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExpiringLinkList'
+          description: ''
+    post:
+      operationId: expiring_link_create
+      tags:
+      - expiring-link
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpiringLinkCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExpiringLinkCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExpiringLinkCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpiringLinkCreate'
+          description: ''
+  /api/v1/images/expiring-link/{signed_link}/:
+    get:
+      operationId: expiring_link_retrieve
+      parameters:
+      - in: path
+        name: signed_link
+        schema:
+          type: string
+        required: true
+      tags:
+      - expiring-link
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    ExpiringLinkCreate:
+      type: object
+      properties:
+        image:
+          type: string
+          format: uuid
+        expiration_time:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - expiration_time
+      - image
+    ExpiringLinkList:
+      type: object
+      properties:
+        link:
+          type: string
+          maxLength: 255
+      required:
+      - link
+    ImageCreate:
+      type: object
+      properties:
+        image:
+          type: string
+          format: uri
+      required:
+      - image
+    ImageList:
+      type: object
+      properties:
+        images:
+          type: string
+          readOnly: true
+      required:
+      - images
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
