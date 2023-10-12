@@ -21,6 +21,7 @@ class ThumbnailSizeAdmin(admin.ModelAdmin):
 class ExpiringLinkAdmin(admin.ModelAdmin):
     list_display = (
         "id",
+        "link",
         "image"
     )
     fieldsets = (
