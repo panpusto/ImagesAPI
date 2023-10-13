@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from environs import Env
+
+env = Env()
+env.read_env('.env-develop')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-hf^&-8d&+#pk@s6-#t^&&mpakqge7^ebc12!i56h3c!+=c2re$'
+SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -37,6 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # third-party apps
+    'rest_framework',
+    'django_cleanup.apps.CleanupConfig',
+    'drf_spectacular',
     # local apps
     'accounts.apps.AccountsConfig',
     'images.apps.ImagesConfig',
@@ -76,13 +84,9 @@ WSGI_APPLICATION = 'images_uploader_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-try:
-    from local_settings import DATABASES
-except ModuleNotFoundError:
-    print("No database configuration in local_settings.py!")
-    print("Complete data and try again!")
-    exit(0)
-
+DATABASES = {
+    'default': env.dj_db_url("DATABASE_URL")
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -127,3 +131,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # user model
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+# media settings
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# rest_framework
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# celery config
+CELERY_BROKER_URL = env.str('CELERY_BROKER_URL')
+CELERY_BROKER_BACKEND = env.str('CELERY_BROKER_BACKEND')
+
+# spectacular config
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Images API',
+    'DESCRIPTION': 'Images uploader: generates thumbnails and expiring links',
+    'VERSION': '1.0.0',
+}
