@@ -9,11 +9,15 @@ from .tasks import generate_thumbnails, cleanup_image_folder
 def create_thumbnails(sender, instance: Image, **kwargs):
     """
     Creates thumbanails for uploaded images 
-    after saving image to db.
+    after saving image to database.
     """
     generate_thumbnails.delay(instance.id)
 
 
 @receiver(cleanup_pre_delete, sender=Image)
 def cleanup_pre_delete_image_folder(sender, instance, **kwargs):
+    """
+    Deletes original file and its thumbnails after deleting
+    image instance's from database.
+    """
     cleanup_image_folder.delay(instance.image.name)

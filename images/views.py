@@ -31,12 +31,8 @@ class ImageListCreateAPIVIew(generics.ListCreateAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             self.perform_create(serializer)
-
             success_message = "Image uploaded successfully."
-            response_data = {
-                 "message": success_message
-            }
-
+            response_data = {"message": success_message}
             return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -74,7 +70,6 @@ class ExpiringLinkDetailAPIView(generics.RetrieveAPIView, ExpiringLinkMixin):
         if expiring_link.is_expired():
             expiring_link.delete()
             raise NotFound("Link has expired.")
-        
         return expiring_link.image
     
     def retrieve(self, request, *args, **kwargs):
@@ -85,5 +80,4 @@ class ExpiringLinkDetailAPIView(generics.RetrieveAPIView, ExpiringLinkMixin):
             content_type=content_type,
             as_attachment=False,
             filename=image.name.split('/')[-1])
-        
         return response
