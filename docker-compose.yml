@@ -28,10 +28,12 @@ services:
 
   redis:
     image: redis:7.2.1-alpine3.18
+    container_name: images_api_redis
     restart: unless-stopped
   
   celery-worker:
     restart: always
+    container_name: images_api_celery_worker
     build: .
     command: celery -A images_uploader_api worker -l info
     volumes:
