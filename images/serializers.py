@@ -20,7 +20,7 @@ class ImageListSerializer(serializers.ModelSerializer):
             "images"
         ]
     
-    def get_images(self, obj):
+    def get_images(self, obj) -> str:
         request = self.context.get("request")
         return obj.get_links(request)
 

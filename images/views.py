@@ -66,7 +66,7 @@ class ExpiringLinkListCreateAPIView(generics.ListCreateAPIView, ExpiringLinkMixi
 class ExpiringLinkDetailAPIView(generics.RetrieveAPIView, ExpiringLinkMixin):
     queryset = ExpiringLink.objects.all()
     permission_classes = [AllowAny]
-
+    
     def get_object(self):
         signed_link = self.kwargs.get("signed_link")
         expiring_link_id = self.decode_signed_value(signed_link)
