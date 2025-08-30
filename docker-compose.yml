@@ -1,41 +1,50 @@
 version: "3.9"
 
 services:
-
   backend:
     container_name: images_api_backend
     restart: always
     build:
       context: .
-    ports: 
+    ports:
       - 8000:8000
     volumes:
-      - .:/code
-    command: python /code/manage.py runserver 0.0.0.0:8000
+      - .:/app
+    working_dir: /app
+    command: >
+      sh -c "uv run python manage.py migrate &&
+             uv run python manage.py runserver 0.0.0.0:8000"
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   db:
     image: postgres:16.0-alpine3.18
     container_name: images_api_db
     restart: always
-    volumes: 
+    volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
   redis:
     image: redis:7.2.1-alpine3.18
     restart: unless-stopped
-  
+
   celery-worker:
     restart: always
     build: .
     command: celery -A images_uploader_api worker -l info
     volumes:
-      - .:/code
+      - .:/app
     depends_on:
       - backend
       - redis
